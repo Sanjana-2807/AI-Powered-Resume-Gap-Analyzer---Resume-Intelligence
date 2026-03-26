@@ -1,0 +1,773 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Roadmap</title>
+<link rel="icon" href="{% static 'images/LOGO.jpeg' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#0f172a;color:#fff;}
+
+/* ── HEADER ── */
+header{
+    position:sticky;top:0;z-index:100;
+    padding:0 50px;
+    height:68px;
+    background:#020617;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+}
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+.logo-text{
+    color:#38bdf8;
+    font-size:20px;
+    font-weight:700;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.back-btn-header{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:#94a3b8;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    padding:7px 14px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.05);
+    transition:all 0.2s;
+    cursor:pointer;
+}
+.back-btn-header:hover{color:#38bdf8;border-color:#38bdf8;background:rgba(56,189,248,0.1);}
+.back-btn-header svg{width:14px;height:14px;}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    position:relative;
+}
+.evo-btn{
+    padding:8px 18px;
+    border:1px solid rgba(56,189,248,0.4);
+    border-radius:20px;
+    background:rgba(56,189,248,0.08);
+    color:#38bdf8;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    transition:all 0.2s;
+    font-family:'Poppins',sans-serif;
+    white-space:nowrap;
+}
+.evo-btn:hover{background:rgba(56,189,248,0.18);border-color:#38bdf8;transform:translateY(-1px);}
+
+/* Profile Button */
+.profile-btn{
+    position:relative;
+    width:38px;height:38px;
+    border-radius:50%;
+    border:2px solid #38bdf8;
+    background:linear-gradient(135deg,#6366f1,#38bdf8);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    transition:transform 0.2s,box-shadow 0.2s;
+    flex-shrink:0;
+}
+.profile-btn:hover{transform:scale(1.08);box-shadow:0 0 16px rgba(56,189,248,0.35);}
+.profile-btn svg{width:20px;height:20px;color:#fff;}
+
+/* Profile Dropdown */
+.profile-dropdown{
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    background:#0c1526;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:8px;
+    min-width:180px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.5);
+    display:none;
+    z-index:300;
+}
+.profile-dropdown.open{display:block;animation:dropIn 0.18s ease;}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+.dd-sep{height:1px;background:rgba(255,255,255,0.08);margin:6px 0;}
+.dd-item{
+    display:flex;align-items:center;gap:9px;
+    padding:9px 12px;
+    border-radius:8px;
+    font-size:13px;
+    color:#94a3b8;
+    cursor:pointer;
+    text-decoration:none;
+    transition:all 0.15s;
+    font-family:'Poppins',sans-serif;
+}
+.dd-item:hover{background:rgba(56,189,248,0.07);color:#e2e8f0;}
+.dd-item svg{width:15px;height:15px;flex-shrink:0;}
+.dd-item.danger{color:#f87171;}
+.dd-item.danger:hover{background:rgba(248,113,113,0.08);color:#f87171;}
+
+/* ── CONTAINER ── */
+.container{max-width:1200px;margin:auto;padding:40px 50px;}
+
+/* ── SUMMARY CARDS ── */
+.summary{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+    margin-bottom:36px;
+}
+.card{
+    background:#020617;
+    padding:25px;
+    border-radius:16px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.06);
+    transition:border-color 0.2s,box-shadow 0.2s;
+}
+.card:hover{border-color:rgba(56,189,248,0.25);box-shadow:0 0 24px rgba(56,189,248,0.07);}
+.pie{
+    width:120px;height:120px;border-radius:50%;
+    margin:auto;display:flex;align-items:center;justify-content:center;
+    background:#1e293b;
+    font-size:22px;font-weight:700;color:#38bdf8;
+}
+
+/* ── ROADMAP ── */
+.step{
+    background:#020617;
+    padding:25px;
+    border-radius:16px;
+    margin-top:25px;
+    position:relative;
+    border:1px solid rgba(255,255,255,0.06);
+    transition:border-color 0.2s;
+}
+.step::before{
+    content:"";
+    position:absolute;
+    left:0;top:0;width:6px;height:100%;
+    border-radius:16px 0 0 16px;
+}
+.active::before{background:#38bdf8;}
+.locked::before{background:#64748b;}
+.completed::before{background:#22c55e;}
+
+.badge{
+    padding:5px 10px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:600;
+}
+.active-b{background:#38bdf8;color:#020617;}
+.locked-b{background:#64748b;color:#e2e8f0;}
+.completed-b{background:#22c55e;color:#022c22;}
+
+.step h3{margin:15px 0 10px;}
+.step ul{padding-left:20px;}
+.step li{margin:5px 0;font-size:14px;color:#cbd5f5;}
+
+.complete-btn{
+    margin-top:15px;
+    padding:8px 20px;
+    border:none;
+    border-radius:20px;
+    background:#38bdf8;
+    cursor:pointer;
+    color:#020617;
+    font-weight:600;
+    font-size:13px;
+    font-family:'Poppins',sans-serif;
+    transition:all 0.2s;
+}
+.complete-btn:hover{background:#0ea5e9;transform:translateY(-1px);}
+.complete-btn:disabled{background:#64748b;cursor:not-allowed;transform:none;}
+
+.skill-link{
+    font-size:12px;
+    color:#38bdf8;
+    text-decoration:none;
+    margin-left:5px;
+}
+.skill-link:hover{text-decoration:underline;}
+
+/* ── SKILL BARS ── */
+.skill-bar-row{margin-top:20px;}
+.skill-bar-row p{font-size:14px;color:#cbd5f5;margin-bottom:6px;}
+.bar{height:8px;background:#1e293b;border-radius:10px;}
+.fill{height:100%;width:0;background:#38bdf8;border-radius:10px;transition:1.5s;}
+
+/* ── UPDATE BUTTON ── */
+.update-btn{text-align:center;margin-top:40px;}
+.update-btn button{
+    padding:12px 32px;
+    border:none;
+    border-radius:24px;
+    background:#64748b;
+    cursor:not-allowed;
+    color:#e2e8f0;
+    font-size:14px;
+    font-weight:600;
+    font-family:'Poppins',sans-serif;
+    transition:all 0.2s;
+}
+.update-btn button.enabled{
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    cursor:pointer;
+    box-shadow:0 4px 20px rgba(56,189,248,0.35);
+}
+.update-btn button.enabled:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(56,189,248,0.5);}
+
+/* ── COMPLETION POPUP ── */
+.popup-overlay{
+    position:fixed;inset:0;
+    background:rgba(2,6,23,0.85);
+    backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;
+    z-index:500;
+    opacity:0;pointer-events:none;
+    transition:opacity 0.3s;
+}
+.popup-overlay.open{opacity:1;pointer-events:all;}
+.popup-box{
+    background:#0c1526;
+    border:1px solid rgba(56,189,248,0.3);
+    border-radius:24px;
+    padding:40px 36px;
+    max-width:420px;
+    width:90%;
+    text-align:center;
+    transform:scale(0.9);
+    transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(56,189,248,0.1);
+}
+.popup-overlay.open .popup-box{transform:scale(1);}
+.popup-emoji{font-size:52px;margin-bottom:16px;display:block;}
+.popup-box h2{
+    font-size:22px;font-weight:700;color:#e2e8f0;
+    margin-bottom:10px;
+    font-family:'Poppins',sans-serif;
+}
+.popup-box p{
+    font-size:14px;color:#94a3b8;line-height:1.7;
+    margin-bottom:28px;
+}
+.popup-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.popup-btn-primary{
+    padding:10px 24px;
+    border:none;
+    border-radius:20px;
+    background:#38bdf8;
+    color:#020617;
+    font-size:13px;font-weight:600;
+    cursor:pointer;
+    font-family:'Poppins',sans-serif;
+    transition:all 0.2s;
+}
+.popup-btn-primary:hover{background:#0ea5e9;transform:translateY(-1px);}
+.popup-btn-ghost{
+    padding:10px 24px;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:20px;
+    background:transparent;
+    color:#94a3b8;
+    font-size:13px;font-weight:500;
+    cursor:pointer;
+    font-family:'Poppins',sans-serif;
+    transition:all 0.2s;
+}
+.popup-btn-ghost:hover{border-color:#38bdf8;color:#38bdf8;}
+
+/* ── FOOTER ── */
+footer{
+    margin-top:40px;
+    padding:28px 50px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+}
+.footer-brand{font-size:15px;font-weight:700;color:#38bdf8;font-family:'Poppins',sans-serif;}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:13px;color:#94a3b8;text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:#38bdf8;}
+.footer-copy{font-size:12px;color:#94a3b8;}
+
+/* ── CHATBOT ── */
+#chat-fab{
+    position:fixed;bottom:28px;right:28px;
+    width:56px;height:56px;border-radius:50%;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    box-shadow:0 0 20px rgba(56,189,248,0.5);
+    border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;font-size:24px;
+    transition:transform 0.2s;
+}
+#chat-fab:hover{transform:scale(1.1);}
+#chat-window{
+    position:fixed;bottom:96px;right:28px;
+    width:320px;max-height:440px;
+    background:rgba(2,10,30,0.97);
+    border:1px solid rgba(56,189,248,0.3);
+    border-radius:20px;
+    display:flex;flex-direction:column;
+    transform:scale(0.85);opacity:0;
+    pointer-events:none;transition:0.3s;
+    z-index:1000;
+}
+#chat-window.open{transform:scale(1);opacity:1;pointer-events:all;}
+.chat-header{
+    background:rgba(56,189,248,0.15);
+    padding:12px;display:flex;justify-content:space-between;
+    border-top-left-radius:20px;border-top-right-radius:20px;
+}
+#chat-messages{flex:1;padding:10px;overflow-y:auto;min-height:250px;}
+.msg{padding:8px 10px;border-radius:10px;margin:5px;font-size:13px;}
+.bot{background:#1e293b;color:white;width:fit-content;max-width:80%;}
+.user{background:#38bdf8;color:#020617;margin-left:auto;width:fit-content;max-width:80%;}
+.typing span{
+    display:inline-block;width:6px;height:6px;
+    background:#38bdf8;margin:2px;border-radius:50%;
+    animation:blink 1.2s infinite;
+}
+@keyframes blink{0%,100%{opacity:0.2}50%{opacity:1}}
+.quick-replies{padding:8px;display:flex;gap:5px;flex-wrap:wrap;}
+.qr-btn{
+    background:#1e293b;color:#38bdf8;
+    border:1px solid #38bdf8;
+    padding:6px 10px;border-radius:10px;margin-top:5px;cursor:pointer;
+    font-family:'Poppins',sans-serif;font-size:12px;
+}
+.chat-input-row{display:flex;padding:10px;border-top:1px solid rgba(255,255,255,0.1);}
+#chat-input{flex:1;padding:8px;border:none;outline:none;background:transparent;color:white;font-family:'Poppins',sans-serif;}
+#chat-send-btn{background:transparent;color:#38bdf8;border:none;padding:8px;cursor:pointer;font-size:18px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+    header{padding:0 20px;}
+    .container{padding:25px 20px;}
+    footer{padding:20px;flex-direction:column;text-align:center;}
+    .footer-links{flex-wrap:wrap;justify-content:center;}
+    .evo-btn span{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<header>
+  <div class="header-left">
+    <!-- Back Button -->
+    <a class="back-btn-header" href="javascript:history.back()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+      </svg>
+      Back
+    </a>
+    <!-- Logo -->
+    <a href="/" class="logo-text">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="9" fill="rgba(56,189,248,0.15)"/>
+        <path d="M8 24L16 8L24 24" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10.5 19h11" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Resume Intelligence
+    </a>
+  </div>
+
+  <div class="header-right">
+    <!-- Check Your Evolution -->
+    <a class="evo-btn" href="/analyzer/evolution/">
+      ✨ <span>Check Your Progress</span>
+    </a>
+
+    <!-- Profile Button + Dropdown -->
+    <div style="position:relative;">
+      <div class="profile-btn" id="profileBtn" onclick="toggleProfile()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="/profile/" class="dd-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          My Profile
+        </a>
+        <div class="dd-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+          Settings
+        </div>
+        <div class="dd-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Support
+        </div>
+        <div class="dd-sep"></div>
+        <a href="/logout/" class="dd-item danger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sign Out
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ MAIN ═══════════════════════════ -->
+<div class="container">
+
+{% if resume %}
+
+<!-- SUMMARY CARDS -->
+<div class="summary">
+  <div class="card">
+    <div class="pie" id="atsScore">0%</div>
+    <p style="margin-top:12px;font-size:14px;color:#cbd5f5;">ATS Score</p>
+  </div>
+  <div class="card">
+    <h2 id="interview" style="font-size:32px;color:#e2e8f0;">0%</h2>
+    <p style="margin-top:12px;font-size:14px;color:#cbd5f5;">Interview Readiness</p>
+  </div>
+  <div class="card">
+    <h2 style="font-size:32px;color:#e2e8f0;">{{ total_skills }}</h2>
+    <p style="margin-top:12px;font-size:14px;color:#cbd5f5;">Skills to Improve</p>
+  </div>
+  <div class="card">
+    <h2 style="font-size:32px;color:#e2e8f0;">{{ weeks }} Weeks</h2>
+    <p style="margin-top:12px;font-size:14px;color:#cbd5f5;">Completion Plan</p>
+  </div>
+</div>
+
+<!-- ROADMAP -->
+<div class="roadmap">
+  {% for week in roadmap %}
+  <div class="step {% if forloop.first %}active{% else %}locked{% endif %}" id="week{{ forloop.counter }}">
+    <span class="badge {% if forloop.first %}active-b{% else %}locked-b{% endif %}">
+      {% if forloop.first %}⏳ In Progress{% else %}🔒 Locked{% endif %}
+    </span>
+    <h3>Week {{ forloop.counter }}</h3>
+    <ul>
+      {% for skill in week %}
+      <li>
+        {{ skill|title }}
+        <a class="skill-link" href="https://www.youtube.com/results?search_query={{ skill }} tutorial" target="_blank">
+          🎥 Learn {{ skill|title }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    <button class="complete-btn" onclick="completeStep('{{ forloop.counter }}')">
+      ✔ Complete Week {{ forloop.counter }}
+    </button>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- SKILL BARS -->
+{% for skill in skill_gap %}
+<div class="skill-bar-row">
+  <p>{{ skill|title }}</p>
+  <div class="bar"><div class="fill" data-width="40"></div></div>
+</div>
+{% endfor %}
+
+<!-- UPDATE RESUME BUTTON -->
+<div class="update-btn">
+  <button id="updateBtn" disabled onclick="showCompletionPopup()">🚀 Update Resume</button>
+</div>
+
+{% else %}
+<div style="text-align:center;padding:80px 40px;">
+  <h2 style="color:#94a3b8;font-size:22px;">No Resume Found</h2>
+  <p style="color:#64748b;margin-top:10px;font-size:14px;">Please upload a resume to generate your roadmap.</p>
+</div>
+{% endif %}
+
+</div>
+<!-- end container -->
+
+<!-- ═══════════════════════════ COMPLETION POPUP ═══════════════════════════ -->
+<div class="popup-overlay" id="completionPopup">
+  <div class="popup-box">
+    <span class="popup-emoji">🎉</span>
+    <h2>You're Absolutely Crushing It!</h2>
+    <p>
+      Congratulations! You've completed all the learning modules on your roadmap.
+      Your skills have leveled up — now it's time to let the world know.
+      Update your profile to reflect your amazing progress and open new doors!
+    </p>
+    <div class="popup-actions">
+      <button class="popup-btn-ghost" onclick="closePopup()">
+        Update Resume
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer>
+  <div class="footer-brand">Resume Intelligence</div>
+  <div class="footer-links">
+    <a href="/about/">About</a>
+    <a href="/tips/">Resume Tips</a>
+    <a href="/history/">My History</a>
+    <a href="/settings/">Settings</a>
+    <a href="/support/">Support</a>
+    <a href="/privacy/">Privacy</a>
+  </div>
+  <div class="footer-copy">© 2026 Resume Intelligence · All rights reserved</div>
+</footer>
+
+<!-- ═══════════════════════════ CHATBOT ═══════════════════════════ -->
+<button id="chat-fab" onclick="toggleChat()">💬</button>
+<div id="chat-window">
+  <div class="chat-header">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#6366f1);display:flex;align-items:center;justify-content:center;font-size:15px;">🤖</div>
+      <div style="display:flex;flex-direction:column;font-size:13px;">
+        <strong>Resume AI Assistant</strong>
+        <span style="color:#34d399;font-size:11px;">● Online</span>
+      </div>
+    </div>
+    <button onclick="toggleChat()" style="background:none;border:none;color:white;cursor:pointer;font-size:16px;">✖</button>
+  </div>
+  <div id="chat-messages"></div>
+  <div class="quick-replies" id="quick-replies">
+    <button class="qr-btn" onclick="sendQuick('resume builder')">Builder</button>
+    <button class="qr-btn" onclick="sendQuick('ats')">ATS</button>
+    <button class="qr-btn" onclick="sendQuick('interview')">Interview</button>
+    <button class="qr-btn" onclick="sendQuick('roadmap')">Roadmap</button>
+  </div>
+  <div class="chat-input-row">
+    <input id="chat-input" placeholder="Ask something..." />
+    <button id="chat-send-btn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ DATA ═══════════════════════════ -->
+<script id="resume-data" type="application/json">
+{
+  "ats_score": {{ resume.ats_score|default:0 }},
+  "interview_score": {{ resume.interview_score|default:0 }}
+}
+</script>
+
+<script>
+/* ── SCORES ── */
+let ats = 0, interview = 0;
+try {
+  const dataNode = document.getElementById("resume-data");
+  if (dataNode) {
+    const data = JSON.parse(dataNode.textContent.trim());
+    ats = data.ats_score || 0;
+    interview = data.interview_score || 0;
+  }
+} catch(e) { console.warn("Could not parse resume-data", e); }
+
+function animate(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (val <= 0) { el.innerText = "0%"; return; }
+  let c = 0;
+  const i = setInterval(() => {
+    c++;
+    el.innerText = c + "%";
+    if (c >= val) clearInterval(i);
+  }, 15);
+}
+animate("atsScore", ats);
+animate("interview", interview);
+
+const atsEl = document.getElementById("atsScore");
+if (atsEl && ats > 0) {
+  atsEl.style.background = `conic-gradient(#38bdf8 ${ats * 3.6}deg, #1e293b 0deg)`;
+}
+
+/* ── SKILL BARS ── */
+setTimeout(() => {
+  document.querySelectorAll(".fill").forEach(el => {
+    el.style.width = (el.dataset.width || 0) + "%";
+  });
+}, 300);
+
+/* ── ROADMAP PROGRESS ── */
+let progress = parseInt(localStorage.getItem("roadmapProgress") || "0");
+
+for (let i = 1; i <= progress; i++) {
+  updateStepUI(i, "completed");
+  if (document.getElementById("week" + (i + 1))) {
+    updateStepUI(i + 1, "active");
+  }
+}
+
+// Enable update button if all weeks done
+checkAllComplete();
+
+function updateStepUI(step, status) {
+  const el = document.getElementById("week" + step);
+  if (!el) return;
+  el.className = "step " + status;
+  const badge = el.querySelector(".badge");
+  if (!badge) return;
+  if (status === "completed") {
+    badge.className = "badge completed-b";
+    badge.innerText = "✔ Completed";
+    const btn = el.querySelector(".complete-btn");
+    if (btn) { btn.disabled = true; btn.innerText = "✔ Done"; }
+  } else if (status === "active") {
+    badge.className = "badge active-b";
+    badge.innerText = "⏳ In Progress";
+    const btn = el.querySelector(".complete-btn");
+    if (btn) { btn.disabled = false; }
+  }
+}
+
+function completeStep(current) {
+  updateStepUI(current, "completed");
+  localStorage.setItem("roadmapProgress", current);
+  const next = parseInt(current) + 1;
+  if (document.getElementById("week" + next)) {
+    updateStepUI(next, "active");
+  }
+  checkAllComplete();
+}
+
+function checkAllComplete() {
+  const allSteps = document.querySelectorAll(".step");
+  const allDone = allSteps.length > 0 && [...allSteps].every(s => s.classList.contains("completed"));
+  const btn = document.getElementById("updateBtn");
+  if (btn && allDone) {
+    btn.disabled = false;
+    btn.classList.add("enabled");
+  }
+}
+
+/* ── COMPLETION POPUP ── */
+function showCompletionPopup() {
+  document.getElementById("completionPopup").classList.add("open");
+}
+function closePopup() {
+  document.getElementById("completionPopup").classList.remove("open");
+  localStorage.removeItem("roadmapProgress");
+}
+// Close popup on overlay click
+document.getElementById("completionPopup").addEventListener("click", function(e) {
+  if (e.target === this) closePopup();
+});
+
+/* ── PROFILE DROPDOWN ── */
+function toggleProfile() {
+  document.getElementById("profileDropdown").classList.toggle("open");
+}
+document.addEventListener("click", function(e) {
+  const btn = document.getElementById("profileBtn");
+  const dd  = document.getElementById("profileDropdown");
+  if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+    dd.classList.remove("open");
+  }
+});
+
+/* ── CHATBOT ── */
+let chatOpen = false, botBusy = false;
+const REPLIES = {
+  'resume': 'Use Resume Builder to create and update your resumes ✨',
+  'ats':    'ATS checks analyze how well your resume matches job descriptions 📊',
+  'interview': 'You can practice interview questions in the Interview module 🎯',
+  'roadmap': 'Follow your personalized learning roadmap right here! 📚',
+  'help': 'I can guide you through Builder, ATS, Interview readiness or your Roadmap 😊'
+};
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chat-window').classList.toggle('open');
+  if (chatOpen && document.getElementById('chat-messages').children.length === 0) {
+    setTimeout(() => addBot("👋 Hi! Need help with your learning roadmap?"), 300);
+  }
+}
+function addBot(text) {
+  const c = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.className = 'msg bot'; d.textContent = text;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function addUser(text) {
+  const c = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.className = 'msg user'; d.textContent = text;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function showTyping() {
+  const c = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.className = 'typing'; d.id = 'typing';
+  d.innerHTML = '<span></span><span></span><span></span>';
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function hideTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+function sendMessage() {
+  if (botBusy) return;
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  document.getElementById('quick-replies').style.display = 'none';
+  addUser(text);
+  botBusy = true;
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    let reply = "I'm here to help navigate your roadmap!";
+    for (let key in REPLIES) {
+      if (text.toLowerCase().includes(key)) { reply = REPLIES[key]; break; }
+    }
+    addBot(reply);
+    botBusy = false;
+  }, 800);
+}
+function sendQuick(t) {
+  document.getElementById('chat-input').value = t;
+  sendMessage();
+}
+document.getElementById('chat-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') sendMessage();
+});
+</script>
+</body>
+</html>

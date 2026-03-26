@@ -1,0 +1,1376 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Intelligence System</title>
+<link rel="icon" type="image/jpeg" href="{% static 'images/LOGO.jpeg' %}">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --sky: #38bdf8;
+    --indigo: #6366f1;
+    --ocean: #0ea5e9;
+    --deep: #020617;
+    --surface: rgba(255,255,255,0.05);
+    --border: rgba(56,189,248,0.18);
+    --text-muted: #94a3b8;
+    --text-body: #cbd5e1;
+    --radius-lg: 20px;
+    --radius-xl: 30px;
+    --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── LIGHT MODE VARIABLES ── */
+body.light {
+    --deep: #f0f6ff;
+    --surface: rgba(0,0,0,0.04);
+    --border: rgba(14,165,233,0.22);
+    --text-muted: #475569;
+    --text-body: #1e293b;
+}
+
+body {
+    background: #020617;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+    transition: background 0.35s ease, color 0.35s ease;
+}
+
+body.light {
+    background: #f0f6ff;
+    color: #0f172a;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+}
+
+/* ── BACKGROUND GLOWS ── */
+.bg-shape {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(130px);
+    opacity: 0.45;
+    z-index: -1;
+    animation: floatBg 14s infinite alternate ease-in-out;
+    transition: opacity 0.35s ease;
+}
+body.light .bg-shape { opacity: 0.18; }
+.shape1 { width: 380px; height: 380px; background: #38bdf8; top: 5%; left: -130px; }
+.shape2 { width: 460px; height: 460px; background: #6366f1; top: 50%; right: -200px; animation-delay: 4s; }
+.shape3 { width: 320px; height: 320px; background: #0ea5e9; bottom: -100px; left: 38%; animation-delay: 8s; }
+
+@keyframes floatBg {
+    0%   { transform: translate(0,0) scale(1); }
+    100% { transform: translate(35px,-45px) scale(1.08); }
+}
+
+/* ══════════════════════════════════
+   HEADER
+══════════════════════════════════ */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 0 80px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(2,6,23,0.7);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.35s ease;
+}
+
+body.light header {
+    background: rgba(240,246,255,0.8);
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.logo-area img {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+.logo-area h2 {
+    font-family: 'Syne', sans-serif;
+    color: var(--sky);
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: 0.4px;
+}
+
+/* NAV LINKS */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+nav a {
+    color: var(--text-body);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 10px;
+    transition: var(--transition);
+    position: relative;
+}
+
+nav a:hover {
+    color: white;
+    background: rgba(56,189,248,0.1);
+}
+
+body.light nav a:hover { color: #0f172a; }
+
+nav a.active {
+    color: var(--sky);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-ghost {
+    padding: 9px 22px;
+    border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 12px;
+    color: var(--text-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.btn-ghost:hover {
+    border-color: var(--sky);
+    color: white;
+}
+
+body.light .btn-ghost:hover { color: #0f172a; }
+
+.btn-primary {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    color: #020617;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.2px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(56,189,248,0.4);
+}
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+    width: 52px;
+    height: 28px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: rgba(255,255,255,0.06);
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    flex-shrink: 0;
+    outline: none;
+    padding: 0;
+}
+
+body.light .theme-toggle {
+    background: rgba(14,165,233,0.12);
+    border-color: rgba(14,165,233,0.35);
+}
+
+.theme-toggle-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(56,189,248,0.4);
+}
+
+body.light .theme-toggle-knob {
+    transform: translateX(24px);
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    box-shadow: 0 2px 8px rgba(251,191,36,0.45);
+}
+
+/* ── HAMBURGER (mobile) ── */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 6px;
+}
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--sky);
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+/* ══════════════════════════════════
+   HERO
+══════════════════════════════════ */
+.hero {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 80px 80px 60px;
+    gap: 60px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-text { max-width: 580px; }
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.25);
+    border-radius: 100px;
+    font-size: 13px;
+    color: var(--sky);
+    font-weight: 500;
+    margin-bottom: 26px;
+    animation: fadeUp 0.6s ease both;
+}
+
+.badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sky);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.hero-text h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 58px;
+    line-height: 1.15;
+    font-weight: 800;
+    margin-bottom: 22px;
+    animation: fadeUp 0.7s 0.1s ease both;
+}
+
+.hero-text h1 span { color: var(--sky); }
+
+.hero-text p {
+    font-size: 17px;
+    color: var(--text-body);
+    line-height: 1.75;
+    margin-bottom: 38px;
+    animation: fadeUp 0.7s 0.2s ease both;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.7s 0.3s ease both;
+}
+
+.hero-actions .btn-primary {
+    padding: 14px 36px;
+    font-size: 15px;
+    border-radius: 14px;
+}
+
+.hero-actions .btn-ghost {
+    padding: 14px 28px;
+    font-size: 15px;
+    border-radius: 14px;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 36px;
+    margin-top: 48px;
+    animation: fadeUp 0.7s 0.4s ease both;
+}
+
+.stat strong {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--sky);
+}
+
+.stat span {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* HERO VISUAL */
+.hero-visual {
+    flex-shrink: 0;
+    width: 420px;
+    max-width: 100%;
+    animation: floatCard 6s infinite ease-in-out;
+    position: relative;
+}
+
+.hero-visual img {
+    width: 100%;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    filter: drop-shadow(0 0 40px rgba(56,189,248,0.25));
+}
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-16px); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════
+   HOW IT WORKS
+══════════════════════════════════ */
+.how {
+    padding: 80px 80px;
+    position: relative;
+    z-index: 1;
+}
+
+.section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sky);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.section-sub {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-bottom: 56px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 30px 26px;
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.step::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(56,189,248,0.06), transparent 60%);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.step:hover {
+    transform: translateY(-8px);
+    border-color: rgba(56,189,248,0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 30px rgba(56,189,248,0.12);
+}
+
+body.light .step:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 0 30px rgba(56,189,248,0.12);
+}
+
+.step:hover::before { opacity: 1; }
+
+.step-icon {
+    font-size: 32px;
+    margin-bottom: 14px;
+    display: block;
+}
+
+.step h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+    transition: color 0.35s;
+}
+
+body.light .step h4 { color: #0f172a; }
+
+.step p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.65;
+}
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    background: rgba(2,6,23,0.8);
+    backdrop-filter: blur(12px);
+    transition: background 0.35s ease;
+}
+
+body.light footer {
+    background: rgba(240,246,255,0.85);
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 50px;
+    padding: 60px 80px 40px;
+}
+
+.footer-brand .logo-area {
+    margin-bottom: 18px;
+}
+
+.footer-brand p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 280px;
+    margin-bottom: 24px;
+}
+
+.social-links {
+    display: flex;
+    gap: 10px;
+}
+
+.social-link {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    text-decoration: none;
+    transition: var(--transition);
+    color: var(--text-muted);
+}
+
+.social-link:hover {
+    border-color: var(--sky);
+    color: var(--sky);
+    background: rgba(56,189,248,0.08);
+}
+
+.footer-col h5 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 18px;
+    letter-spacing: 0.3px;
+    transition: color 0.35s;
+}
+
+body.light .footer-col h5 { color: #0f172a; }
+
+.footer-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.footer-col ul li a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.footer-col ul li a:hover {
+    color: var(--sky);
+}
+
+.footer-bottom {
+    padding: 20px 80px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+body.light .footer-bottom {
+    border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.footer-bottom p {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-bottom-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-bottom-links a:hover { color: var(--sky); }
+
+/* ══════════════════════════════════
+   CHATBOT
+══════════════════════════════════ */
+.chat-fab {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 1000;
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 8px 32px rgba(56,189,248,0.45);
+    transition: var(--transition);
+    color: #020617;
+}
+
+.chat-fab:hover {
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 12px 40px rgba(56,189,248,0.55);
+}
+
+.chat-fab .fab-close { display: none; }
+
+/* CHAT WINDOW */
+.chat-window {
+    position: fixed;
+    bottom: 100px;
+    right: 28px;
+    z-index: 999;
+    width: 380px;
+    max-height: 560px;
+    border-radius: 24px;
+    background: #0c1526;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(56,189,248,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.92) translateY(12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+    transform-origin: bottom right;
+}
+
+body.light .chat-window {
+    background: #ffffff;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(56,189,248,0.12);
+}
+
+.chat-window.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* CHAT HEADER */
+.chat-header {
+    padding: 18px 20px;
+    background: linear-gradient(135deg, rgba(56,189,248,0.12), rgba(99,102,241,0.08));
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.chat-header-info { flex: 1; }
+
+.chat-header-info strong {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    transition: color 0.35s;
+}
+
+body.light .chat-header-info strong { color: #0f172a; }
+
+.chat-header-info small {
+    font-size: 12px;
+    color: #34d399;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.chat-header-info small::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #34d399;
+    animation: pulse 2s infinite;
+}
+
+.chat-header-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: var(--transition);
+    line-height: 1;
+}
+
+.chat-header-close:hover { color: white; background: rgba(255,255,255,0.08); }
+
+/* CHAT MESSAGES */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56,189,248,0.2) transparent;
+}
+
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.2); border-radius: 4px; }
+
+.msg {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    animation: msgIn 0.3s ease;
+}
+
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user { flex-direction: row-reverse; }
+
+.msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.msg.user .msg-avatar {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.msg-bubble {
+    max-width: 82%;
+    padding: 11px 15px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: white;
+}
+
+body.light .msg-bubble { color: #1e293b; }
+
+.msg.bot .msg-bubble {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-bottom-left-radius: 4px;
+}
+
+body.light .msg.bot .msg-bubble {
+    background: #f1f5f9;
+    border-color: rgba(0,0,0,0.06);
+    color: #1e293b;
+}
+
+.msg.user .msg-bubble {
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+    color: #020617;
+    font-weight: 500;
+    border-bottom-right-radius: 4px;
+}
+
+/* TYPING INDICATOR */
+.typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 8px 4px;
+}
+
+.typing-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sky);
+    animation: dotBounce 1.2s infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30%            { transform: translateY(-8px); opacity: 1; }
+}
+
+/* QUICK REPLIES */
+.quick-replies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 0 16px 12px;
+}
+
+.quick-btn {
+    padding: 6px 14px;
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 100px;
+    background: rgba(56,189,248,0.07);
+    color: var(--sky);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.quick-btn:hover {
+    background: rgba(56,189,248,0.18);
+    border-color: var(--sky);
+}
+
+/* CHAT INPUT */
+.chat-input-area {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    background: rgba(255,255,255,0.02);
+}
+
+body.light .chat-input-area { background: rgba(0,0,0,0.02); }
+
+#chat-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    color: white;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    resize: none;
+    max-height: 100px;
+    transition: border-color 0.2s, background 0.35s, color 0.35s;
+    line-height: 1.4;
+}
+
+body.light #chat-input {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: rgba(14,165,233,0.2);
+}
+
+#chat-input::placeholder { color: rgba(148,163,184,0.6); }
+#chat-input:focus { border-color: rgba(56,189,248,0.5); }
+
+.chat-send {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    flex-shrink: 0;
+    color: #020617;
+    font-size: 16px;
+}
+
+.chat-send:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(56,189,248,0.4);
+}
+
+.chat-send:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 1024px) {
+    header { padding: 0 40px; }
+    nav { display: none; }
+    .hamburger { display: flex; }
+    .hero { padding: 60px 40px; }
+    .how { padding: 60px 40px; }
+    .footer-main { padding: 50px 40px 30px; grid-template-columns: 1fr 1fr; }
+    .footer-bottom { padding: 18px 40px; }
+}
+
+@media (max-width: 768px) {
+    header { padding: 0 20px; height: 66px; }
+    .hero {
+        flex-direction: column;
+        padding: 50px 20px;
+        text-align: center;
+        gap: 40px;
+    }
+    .hero-text h1 { font-size: 38px; }
+    .hero-actions { justify-content: center; }
+    .hero-stats { justify-content: center; gap: 28px; }
+    .hero-visual { width: 100%; max-width: 360px; }
+    .how { padding: 50px 20px; }
+    .section-title { font-size: 30px; }
+    .footer-main { grid-template-columns: 1fr; gap: 30px; padding: 40px 20px 20px; }
+    .footer-bottom { flex-direction: column; gap: 10px; padding: 16px 20px; text-align: center; }
+    .chat-window { width: calc(100vw - 20px); right: 10px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUND SHAPES -->
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+<div class="bg-shape shape3"></div>
+
+<!-- ════════════════════════════
+     HEADER
+════════════════════════════ -->
+<header>
+    <a href="/" class="logo-area" style="text-decoration:none;">
+        <img src="{% static 'images/LOGO.jpeg' %}" alt="Resume Intelligence Logo">
+        <h2>Resume Intelligence</h2>
+    </a>
+
+    <nav>
+        <a href="/" class="active">Home</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="/">About</a>
+    </nav>
+
+    <div class="header-actions">
+        <!-- ── THEME TOGGLE (added) ── -->
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode" title="Toggle dark / light mode">
+            <div class="theme-toggle-knob" id="themeKnob">🌙</div>
+        </button>
+
+        <button class="btn-ghost" onclick="location.href='/login/'">Log In</button>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button class="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</header>
+
+<!-- ════════════════════════════
+     HERO
+════════════════════════════ -->
+<section class="hero">
+    <div class="hero-text">
+        <div class="badge">✨ AI-Powered Career Platform</div>
+        <h1>
+            Build <span>ATS-Ready</span> Resumes<br>
+            with AI Intelligence
+        </h1>
+        <p>
+            Resume Intelligence System evaluates your resume, predicts rejection risks,
+            and gives you a personalized career roadmap — all powered by cutting-edge AI.
+        </p>
+        <div class="hero-actions">
+            <button class="btn-primary" onclick="location.href='/login/'">Get Started Free →</button>
+            <button class="btn-ghost" onclick="location.href='#how-it-works'">See How It Works</button>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><strong>94%</strong><span>ATS Pass Rate</span></div>
+            <div class="stat"><strong>10k+</strong><span>Resumes Analyzed</span></div>
+            <div class="stat"><strong>3×</strong><span>More Interviews</span></div>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <img src="{% static 'images/resume.jpg' %}" alt="Resume AI Illustration">
+    </div>
+</section>
+
+<!-- ════════════════════════════
+     HOW IT WORKS
+════════════════════════════ -->
+<section class="how" id="how-it-works">
+    <p class="section-label">Process</p>
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">From upload to offer — our AI guides every step of your career journey.</p>
+
+    <div class="steps">
+        <div class="step">
+            <span class="step-icon">📂</span>
+            <h4>Upload Your Resume</h4>
+            <p>Securely upload your PDF or DOCX resume for intelligent processing and analysis.</p>
+        </div>
+        <div class="step">
+            <span class="step-icon">📈</span>
+            <h4>AI Evaluation</h4>
+            <p>ATS scoring, keyword density analysis, and rejection risk prediction in seconds.</p>
+        </div>
+        <div class="step">
+            <span class="step-icon">📊</span>
+            <h4>Smart Insights</h4>
+            <p>Personalized suggestions to strengthen your resume's impact and effectiveness.</p>
+        </div>
+        <div class="step">
+            <span class="step-icon">🛠️</span>
+            <h4>Career Roadmap</h4>
+            <p>A custom learning path aligned with your target role and skill gaps.</p>
+        </div>
+        <div class="step">
+            <span class="step-icon">📄</span>
+            <h4>Resume Analysis</h4>
+            <p>Deep compatibility check for ATS systems with actionable improvement areas.</p>
+        </div>
+        <div class="step">
+            <span class="step-icon">🧠</span>
+            <h4>Interview Readiness</h4>
+            <p>Personalized interview questions, skill assessments, and preparation plans.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════
+     FOOTER
+════════════════════════════ -->
+<footer>
+    <div class="footer-main">
+        <div class="footer-brand">
+            <div class="logo-area" style="display:flex;align-items:center;gap:10px;">
+                <img src="{% static 'images/LOGO.jpeg' %}" alt="Logo" style="width:36px;height:36px;border-radius:8px;">
+                <span style="font-family:'Syne',sans-serif;font-weight:800;color:#38bdf8;font-size:16px;">Resume Intelligence</span>
+            </div>
+            <p style="margin-top:14px;">An AI-powered platform for smarter resume evaluation, ATS optimization, and career acceleration.</p>
+            <div class="social-links">
+                <a class="social-link" href="#" title="Twitter">𝕏</a>
+                <a class="social-link" href="#" title="LinkedIn">in</a>
+                <a class="social-link" href="#" title="GitHub">⌥</a>
+                <a class="social-link" href="#" title="Email">✉</a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h5>Product</h5>
+            <ul>
+                <li><a href="#">Resume Analyzer</a></li>
+                <li><a href="#">ATS Optimizer</a></li>
+                <li><a href="#">Career Roadmap</a></li>
+                <li><a href="#">Interview Prep</a></li>
+                <li><a href="#">Dashboard</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h5>Resources</h5>
+            <ul>
+                <li><a href="#">Documentation</a></li>
+                <li><a href="#">Resume Tips</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Support</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h5>Company</h5>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Academic Project</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 Resume Intelligence System — Academic / Mock Project</p>
+        <div class="footer-bottom-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Cookies</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ════════════════════════════
+     CHATBOT
+════════════════════════════ -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" aria-label="Open chat">
+    <span class="fab-open">💬</span>
+    <span class="fab-close">✕</span>
+</button>
+
+<div class="chat-window" id="chatWindow" role="dialog" aria-label="AI Assistant">
+
+    <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div class="chat-header-info">
+            <strong>RI Assistant</strong>
+            <small>Online — ready to help</small>
+        </div>
+        <button class="chat-header-close" onclick="toggleChat()" aria-label="Close">✕</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+        <div class="msg bot">
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-bubble">
+                Hi! 👋 I'm your <strong>Resume Intelligence Assistant</strong>.<br><br>
+                I can help you understand our platform, answer questions about ATS scores, or guide you through improving your resume. What would you like to know?
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-replies" id="quickReplies">
+        <button class="quick-btn" onclick="sendQuick('What is ATS scoring?')">What is ATS scoring?</button>
+        <button class="quick-btn" onclick="sendQuick('How do I upload my resume?')">Upload resume</button>
+        <button class="quick-btn" onclick="sendQuick('How does rejection prediction work?')">Rejection prediction</button>
+        <button class="quick-btn" onclick="sendQuick('What features does this platform offer?')">Platform features</button>
+    </div>
+
+    <div class="chat-input-area">
+        <textarea id="chat-input" placeholder="Ask me anything about your resume…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="chat-send" id="sendBtn" onclick="sendMessage()" aria-label="Send">
+            ➤
+        </button>
+    </div>
+</div>
+
+<!-- ════════════════════════════
+     SCRIPTS
+════════════════════════════ -->
+<script>
+/* ── THEME TOGGLE (added) ── */
+const knob = document.getElementById('themeKnob');
+
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    knob.textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('ri-theme', isLight ? 'light' : 'dark');
+}
+
+// Restore saved preference on load
+(function() {
+    const saved = localStorage.getItem('ri-theme');
+    if (saved === 'light') {
+        document.body.classList.add('light');
+        knob.textContent = '☀️';
+    }
+})();
+
+/* ── Chat toggle ── */
+function toggleChat() {
+    const win = document.getElementById('chatWindow');
+    const fab = document.getElementById('chatFab');
+    const isOpen = win.classList.toggle('open');
+    fab.querySelector('.fab-open').style.display = isOpen ? 'none' : 'flex';
+    fab.querySelector('.fab-close').style.display = isOpen ? 'flex' : 'none';
+    if (isOpen) document.getElementById('chat-input').focus();
+}
+
+/* ── Keyboard send ── */
+function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+/* ── Auto resize textarea ── */
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+/* ── Quick reply ── */
+function sendQuick(text) {
+    document.getElementById('chat-input').value = text;
+    document.getElementById('quickReplies').style.display = 'none';
+    sendMessage();
+}
+
+/* ── Append message ── */
+function appendMsg(role, html) {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    const avatar = role === 'bot' ? '🤖' : '👤';
+    div.innerHTML = `
+        <div class="msg-avatar">${avatar}</div>
+        <div class="msg-bubble">${html}</div>
+    `;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+}
+
+/* ── Typing indicator ── */
+function showTyping() {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.id = 'typingIndicator';
+    div.innerHTML = `
+        <div class="msg-avatar">🤖</div>
+        <div class="msg-bubble" style="padding:12px 16px;">
+            <div class="typing-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideTyping() {
+    const el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+}
+
+/* ── Knowledge base ── */
+const KB = [
+    {
+        patterns: ['ats', 'applicant tracking', 'score'],
+        reply: `<strong>ATS (Applicant Tracking System)</strong> scoring measures how well your resume matches a job description algorithmically.<br><br>Our AI gives your resume an ATS score from 0–100, highlighting missing keywords, formatting issues, and section problems that cause automatic rejections. Aim for <strong>80+</strong> to pass most systems.`
+    },
+    {
+        patterns: ['upload', 'how to start', 'get started', 'begin'],
+        reply: `Getting started is simple! 🚀<br><br>1. Click <strong>Get Started Free</strong><br>2. Create your account<br>3. Upload your resume (PDF or DOCX)<br>4. Our AI analyzes it within seconds<br><br>You'll receive your ATS score, rejection risk, and improvement suggestions instantly.`
+    },
+    {
+        patterns: ['rejection', 'predict', 'risk'],
+        reply: `Our <strong>Rejection Prediction</strong> engine analyzes dozens of signals including:<br><br>• Keyword gap vs job description<br>• Formatting ATS-friendliness<br>• Section completeness<br>• Action verb strength<br>• Quantification of achievements<br><br>It gives you a rejection probability score so you know exactly what to fix before applying.`
+    },
+    {
+        patterns: ['feature', 'platform', 'offer', 'what can', 'capabilities'],
+        reply: `Resume Intelligence offers:<br><br>📄 <strong>Resume Analyzer</strong> — ATS score & keyword check<br>📈 <strong>Rejection Predictor</strong> — risk score per job<br>🛠 <strong>Career Roadmap</strong> — personalized skill path<br>🧠 <strong>Interview Prep</strong> — curated questions<br>📊 <strong>Smart Insights</strong> — actionable improvements<br><br>All in one dashboard!`
+    },
+    {
+        patterns: ['roadmap', 'career', 'learning', 'skill'],
+        reply: `Your <strong>Career Roadmap</strong> is generated after resume analysis. It identifies skill gaps between your current profile and your target role, then recommends:<br><br>• Online courses & certifications<br>• Projects to build<br>• Timeline to reach your goal<br><br>It adapts as you improve your profile.`
+    },
+    {
+        patterns: ['interview', 'prepare', 'question'],
+        reply: `Our <strong>Interview Readiness</strong> feature gives you:<br><br>• Role-specific interview questions<br>• Behavioral & technical question banks<br>• Skill assessment quizzes<br>• Tips based on your resume gaps<br><br>Paired with your roadmap, it prepares you end-to-end for your target job.`
+    },
+    {
+        patterns: ['free', 'cost', 'price', 'pricing', 'paid'],
+        reply: `This platform is an <strong>academic / mock project</strong> — so it's completely free! 🎉<br><br>All features including resume analysis, ATS scoring, career roadmap, and interview prep are available to registered users at no cost.`
+    },
+    {
+        patterns: ['login', 'sign up', 'register', 'account'],
+        reply: `To access all features, click the <strong>Get Started Free</strong> button at the top of the page or <a href="/login/" style="color:#38bdf8;">click here to login / register</a>. Creating an account is quick and free!`
+    },
+    {
+        patterns: ['hello', 'hi', 'hey', 'good morning', 'good evening'],
+        reply: `Hello there! 👋 Great to meet you!<br><br>I'm here to help you get the most out of the Resume Intelligence platform. Ask me about ATS scoring, how to upload your resume, rejection prediction, or anything else!`
+    },
+    {
+        patterns: ['thank', 'thanks', 'thx'],
+        reply: `You're very welcome! 😊 Feel free to ask if you have more questions. Good luck with your job search! 🚀`
+    }
+];
+
+/* ── Generate reply ── */
+function generateReply(msg) {
+    const lower = msg.toLowerCase();
+    for (const entry of KB) {
+        if (entry.patterns.some(p => lower.includes(p))) {
+            return entry.reply;
+        }
+    }
+    return `That's a great question! I'm currently a guided assistant for the Resume Intelligence platform.<br><br>For specific queries, you can:<br>• Explore the platform after <a href="/login/" style="color:#38bdf8;">signing up</a><br>• Try rephrasing your question<br>• Contact our support team<br><br>I'm best at answering questions about ATS scores, resume uploading, features, or career roadmaps!`;
+}
+
+/* ── Send message ── */
+async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('sendBtn');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+    sendBtn.disabled = true;
+    document.getElementById('quickReplies').style.display = 'none';
+
+    appendMsg('user', escapeHTML(text));
+    showTyping();
+
+    await new Promise(r => setTimeout(r, 800 + Math.random() * 600));
+
+    hideTyping();
+    const reply = generateReply(text);
+    appendMsg('bot', reply);
+    sendBtn.disabled = false;
+    input.focus();
+}
+
+function escapeHTML(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Mobile nav toggle ── */
+function toggleMobileNav() {
+    const nav = document.querySelector('nav');
+    if (nav.style.display === 'flex') {
+        nav.style.display = 'none';
+    } else {
+        nav.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:66px;left:0;right:0;background:rgba(2,6,23,0.97);padding:20px 24px;gap:4px;border-bottom:1px solid rgba(56,189,248,0.15);backdrop-filter:blur(18px);z-index:99;';
+    }
+}
+</script>
+<body>
+
+<!-- your content -->
+
+<script src="//code.tidio.co/abcd1234xyz.js" async></script>
+
+</body>
+</body>
+</html>
